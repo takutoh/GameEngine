@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\takut\\source\\repos\\GameEngine\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{CAD7D66B-6B44-4A57-8D6D-FB7819120FAE}|GameEngine.vcxproj|C:\\Users\\takut\\source\\repos\\GameEngine\\App.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{CAD7D66B-6B44-4A57-8D6D-FB7819120FAE}|GameEngine.vcxproj|solutionrelative:App.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CAD7D66B-6B44-4A57-8D6D-FB7819120FAE}|GameEngine.vcxproj|C:\\Users\\takut\\source\\repos\\GameEngine\\App.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{CAD7D66B-6B44-4A57-8D6D-FB7819120FAE}|GameEngine.vcxproj|solutionrelative:App.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{CAD7D66B-6B44-4A57-8D6D-FB7819120FAE}|GameEngine.vcxproj|C:\\Users\\takut\\source\\repos\\GameEngine\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{CAD7D66B-6B44-4A57-8D6D-FB7819120FAE}|GameEngine.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
@@ -14,19 +22,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "main.cpp",
               "DocumentMoniker": "C:\\Users\\takut\\source\\repos\\GameEngine\\main.cpp",
               "RelativeDocumentMoniker": "main.cpp",
               "ToolTip": "C:\\Users\\takut\\source\\repos\\GameEngine\\main.cpp",
               "RelativeToolTip": "main.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-10-05T14:09:51.495Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "App.h",
+              "DocumentMoniker": "C:\\Users\\takut\\source\\repos\\GameEngine\\App.h",
+              "RelativeDocumentMoniker": "App.h",
+              "ToolTip": "C:\\Users\\takut\\source\\repos\\GameEngine\\App.h",
+              "RelativeToolTip": "App.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-10-06T02:17:20.396Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "App.cpp",
+              "DocumentMoniker": "C:\\Users\\takut\\source\\repos\\GameEngine\\App.cpp",
+              "RelativeDocumentMoniker": "App.cpp",
+              "ToolTip": "C:\\Users\\takut\\source\\repos\\GameEngine\\App.cpp",
+              "RelativeToolTip": "App.cpp",
+              "ViewState": "AgIAACoAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-06T02:17:04.901Z",
               "EditorCaption": ""
             }
           ]
