@@ -2,6 +2,15 @@
 
 void Application::Run(HINSTANCE hInstance)
 {
+	// ウィンドウのクラス名
+	LPCWSTR wClassName = L"MyClass";
+
+	// 同じウィンドウがある場合
+	if (FindWindow(wClassName, nullptr) != NULL) {
+		int id = MessageBox(NULL, L"The game engine is already running.", L"ERROR", MB_ICONERROR | MB_OK);
+		return;
+	}
+
 	// ウィンドウクラスの設定
 	WNDCLASSEX wc = {};
 	wc.cbSize = sizeof(WNDCLASSEX);
@@ -12,7 +21,7 @@ void Application::Run(HINSTANCE hInstance)
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = GetSysColorBrush(COLOR_BACKGROUND);
 	wc.lpszMenuName = nullptr;
-	wc.lpszClassName = L"MyClass";
+	wc.lpszClassName = wClassName;
 	RegisterClassEx(&wc);
 
 	// ウィンドウサイズの設定
@@ -27,7 +36,7 @@ void Application::Run(HINSTANCE hInstance)
 	// ウィンドウの生成
 	HWND hwnd = CreateWindowEx(
 		0,
-		L"MyClass",
+		wClassName,
 		L"GameEngine",
 		style,
 		CW_USEDEFAULT,
