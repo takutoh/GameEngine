@@ -1,4 +1,5 @@
 #include "App.h"
+#include "Engine.h"
 
 void Application::Run(HINSTANCE hInstance)
 {
@@ -54,6 +55,13 @@ void Application::Run(HINSTANCE hInstance)
 
 	// ウィンドウにフォーカス
 	SetFocus(hwnd);
+
+	// 描画エンジンの初期化
+	g_Engine = new Engine();
+	if (!g_Engine->Init(hwnd, WINDOW_WIDTH, WINDOW_HEIGHT))
+	{
+		return;
+	}
 
 	MainLoop();
 }
