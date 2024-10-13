@@ -8,6 +8,7 @@
 #include "RootSignature.h"
 #include "PipelineState.h"
 #include "IndexBuffer.h"
+#include "AssimpLoader.h"
 
 Scene* g_Scene;
 
@@ -19,32 +20,60 @@ RootSignature* rootSignature;
 PipelineState* pipelineState;
 IndexBuffer* indexBuffer;
 
+const wchar_t* modelFile = L"Assets/Alicia/FBX/Alicia_solid_Unity.FBX";
+
+std::vector<Mesh> meshes;                 // メッシュの配列
+std::vector<VertexBuffer*> vertexBuffers; // メッシュの数分の頂点バッファ
+std::vector<IndexBuffer*> indexBuffers;   // メッシュの数分のインデックスバッファ
+
 static UINT WINDOW_WIDTH = Application::WINDOW_WIDTH;
 static UINT WINDOW_HEIGHT = Application::WINDOW_HEIGHT;
 
 bool Scene::Init()
 {
-	// 頂点を4つにして四角形を定義
-	Vertex vertices[4] = {};
-	vertices[0].Position = XMFLOAT3(-1.0f, 1.0f, 0.0f);
-	vertices[0].Color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	ImportSettings importSetting =
+	{
+		modelFile,
+		meshes,
+		false,
+		true
+	};
 
-	vertices[1].Position = XMFLOAT3(1.0f, 1.0f, 0.0f);
-	vertices[1].Color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-
-	vertices[2].Position = XMFLOAT3(1.0f, -1.0f, 0.0f);
-	vertices[2].Color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
-
-	vertices[3].Position = XMFLOAT3(-1.0f, -1.0f, 0.0f);
-	vertices[3].Color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
-
-	// 頂点バッファの生成
-	auto vertexSize = sizeof(Vertex) * std::size(vertices);
-	auto vertexStride = sizeof(Vertex);
-	vertexBuffer = new VertexBuffer(vertexSize, vertexStride, vertices);
-	if (!vertexBuffer->IsValid())
+	AssimpLoader loader;
+	if (!loader.Load(importSetting))
 	{
 		return false;
+	}
+
+	// 頂点バッファの生成
+	vertexBuffers.reserve(meshes.size());
+	for (size_t i = 0; i < meshes.size(); i++)
+	{
+		auto size = sizeof(Vertex) * meshes[i].Vertices.size();
+		auto stride = sizeof(Vertex);
+		auto vertices = meshes[i].Vertices.data();
+		auto pVB = new VertexBuffer(size, stride, vertices);
+		if (!pVB->IsValid())
+		{
+			return false;
+		}
+
+		vertexBuffers.push_back(pVB);
+	}
+
+	// インデックスバッファの生成
+	indexBuffers.reserve(meshes.size());
+	for (size_t i = 0; i < meshes.size(); i++)
+	{
+		auto size = sizeof(uint32_t) * meshes[i].Indices.size();
+		auto indices = meshes[i].Indices.data();
+		auto pIB = new IndexBuffer(size, indices);
+		if (!pIB->IsValid())
+		{
+			return false;
+		}
+
+		indexBuffers.push_back(pIB);
 	}
 
 	// 変換行列の生成
@@ -56,6 +85,10 @@ bool Scene::Init()
 
 	for (size_t i = 0; i < Engine::FRAME_BUFFER_COUNT; i++)
 	{
+		auto eyePos = XMVectorSet(0.0f, 120.0, 75.0, 0.0f);
+		auto targetPos = XMVectorSet(0.0f, 120.0, 0.0, 0.0f);
+		auto upward = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		constexpr auto fov = XMConvertToRadians(60);
 		constantBuffer[i] = new ConstantBuffer(sizeof(Transform));
 		if (!constantBuffer[i]->IsValid())
 		{
@@ -93,16 +126,6 @@ bool Scene::Init()
 		return false;
 	}
 
-	uint32_t indices[] = { 0, 1, 2, 0, 2, 3 }; // これに書かれている順序で描画
-
-	// インデックスバッファの生成
-	auto size = sizeof(uint32_t) * std::size(indices);
-	indexBuffer = new IndexBuffer(size, indices);
-	if (!indexBuffer->IsValid())
-	{
-		return false;
-	}
-
 	return true;
 }
 
@@ -113,18 +136,23 @@ void Scene::Update()
 
 void Scene::Draw()
 {
-	auto currentIndex = g_Engine->CurrentBackBufferIndex(); // 現在のフレーム番号の取得
-	auto commandList = g_Engine->CommandList();             // コマンドリスト
-	auto vbView = vertexBuffer->View();                     // 頂点バッファビュー
-	auto ibView = indexBuffer->View();                      // インデックスバッファビュー
+	auto currentIndex = g_Engine->CurrentBackBufferIndex();
+	auto commandList = g_Engine->CommandList();
 
-	commandList->SetGraphicsRootSignature(rootSignature->Get());                                   // ルートシグネチャをセット
-	commandList->SetPipelineState(pipelineState->Get());                                           // パイプラインステートをセット
-	commandList->SetGraphicsRootConstantBufferView(0, constantBuffer[currentIndex]->GetAddress()); // 定数バッファをセット
+	// メッシュの数だけインデックス分の描画を行う処理を回す
+	for (size_t i = 0; i < meshes.size(); i++)
+	{
+		auto vbView = vertexBuffers[i]->View(); // そのメッシュに対応する頂点バッファ
+		auto ibView = indexBuffers[i]->View();  // そのメッシュに対応する頂点バッファ
 
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	commandList->IASetVertexBuffers(0, 1, &vbView);
-	commandList->IASetIndexBuffer(&ibView);                                   // インデックスバッファをセット
+		commandList->SetGraphicsRootSignature(rootSignature->Get());
+		commandList->SetPipelineState(pipelineState->Get());
+		commandList->SetGraphicsRootConstantBufferView(0, constantBuffer[currentIndex]->GetAddress());
 
-	commandList->DrawIndexedInstanced(6, 1, 0, 0, 0); // 6個のインデックスで描画
+		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		commandList->IASetVertexBuffers(0, 1, &vbView);
+		commandList->IASetIndexBuffer(&ibView);
+
+		commandList->DrawIndexedInstanced(meshes[i].Indices.size(), 1, 0, 0, 0); // インデックスの数分描画
+	}
 }
