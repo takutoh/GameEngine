@@ -7,6 +7,7 @@
 #include "ConstantBuffer.h"
 #include "RootSignature.h"
 #include "PipelineState.h"
+#include "IndexBuffer.h"
 
 Scene* g_Scene;
 
@@ -16,21 +17,26 @@ VertexBuffer* vertexBuffer;
 ConstantBuffer* constantBuffer[Engine::FRAME_BUFFER_COUNT];
 RootSignature* rootSignature;
 PipelineState* pipelineState;
+IndexBuffer* indexBuffer;
 
 static UINT WINDOW_WIDTH = Application::WINDOW_WIDTH;
 static UINT WINDOW_HEIGHT = Application::WINDOW_HEIGHT;
 
 bool Scene::Init()
 {
-	Vertex vertices[3] = {};
-	vertices[0].Position = XMFLOAT3(-1.0f, -1.0f, 0.0f);
-	vertices[0].Color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	// 頂点を4つにして四角形を定義
+	Vertex vertices[4] = {};
+	vertices[0].Position = XMFLOAT3(-1.0f, 1.0f, 0.0f);
+	vertices[0].Color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	vertices[1].Position = XMFLOAT3(1.0f, -1.0f, 0.0f);
+	vertices[1].Position = XMFLOAT3(1.0f, 1.0f, 0.0f);
 	vertices[1].Color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 
-	vertices[2].Position = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	vertices[2].Color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[2].Position = XMFLOAT3(1.0f, -1.0f, 0.0f);
+	vertices[2].Color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+
+	vertices[3].Position = XMFLOAT3(-1.0f, -1.0f, 0.0f);
+	vertices[3].Color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	// 頂点バッファの生成
 	auto vertexSize = sizeof(Vertex) * std::size(vertices);
@@ -87,16 +93,22 @@ bool Scene::Init()
 		return false;
 	}
 
+	uint32_t indices[] = { 0, 1, 2, 0, 2, 3 }; // これに書かれている順序で描画
+
+	// インデックスバッファの生成
+	auto size = sizeof(uint32_t) * std::size(indices);
+	indexBuffer = new IndexBuffer(size, indices);
+	if (!indexBuffer->IsValid())
+	{
+		return false;
+	}
+
 	return true;
 }
 
 void Scene::Update()
 {
-	// アニメーション
-	rotateY += 0.02f;
-	auto currentIndex = g_Engine->CurrentBackBufferIndex();                    // 現在のフレーム番号の取得
-	auto currentTransform = constantBuffer[currentIndex]->GetPtr<Transform>(); // 現在のフレーム番号に対応する定数バッファの取得
-	currentTransform->World = DirectX::XMMatrixRotationY(rotateY);             // Y軸で回転
+
 }
 
 void Scene::Draw()
@@ -104,13 +116,15 @@ void Scene::Draw()
 	auto currentIndex = g_Engine->CurrentBackBufferIndex(); // 現在のフレーム番号の取得
 	auto commandList = g_Engine->CommandList();             // コマンドリスト
 	auto vbView = vertexBuffer->View();                     // 頂点バッファビュー
+	auto ibView = indexBuffer->View();                      // インデックスバッファビュー
 
 	commandList->SetGraphicsRootSignature(rootSignature->Get());                                   // ルートシグネチャをセット
 	commandList->SetPipelineState(pipelineState->Get());                                           // パイプラインステートをセット
 	commandList->SetGraphicsRootConstantBufferView(0, constantBuffer[currentIndex]->GetAddress()); // 定数バッファをセット
 
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形を描画する設定
-	commandList->IASetVertexBuffers(0, 1, &vbView);                           // 頂点バッファの設定
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	commandList->IASetVertexBuffers(0, 1, &vbView);
+	commandList->IASetIndexBuffer(&ibView);                                   // インデックスバッファをセット
 
-	commandList->DrawInstanced(3, 1, 0, 0); // 3個の頂点を描画
+	commandList->DrawIndexedInstanced(6, 1, 0, 0, 0); // 6個のインデックスで描画
 }

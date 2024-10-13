@@ -159,6 +159,7 @@
     <ClCompile Include="ImGui\sauce\imgui_impl_win32.cpp" />
     <ClCompile Include="ImGui\sauce\imgui_tables.cpp" />
     <ClCompile Include="ImGui\sauce\imgui_widgets.cpp" />
+    <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="RootSignature.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="ImGui\header\imstb_rectpack.h" />
     <ClInclude Include="ImGui\header\imstb_textedit.h" />
     <ClInclude Include="ImGui\header\imstb_truetype.h" />
+    <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="PipelineState.h" />
     <ClInclude Include="RootSignature.h" />
     <ClInclude Include="Scene.h" />

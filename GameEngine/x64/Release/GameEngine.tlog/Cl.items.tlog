@@ -8,6 +8,7 @@ C:\Users\takut\source\repos\GameEngine\ImGui\sauce\imgui_impl_dx12.cpp;C:\Users\
 C:\Users\takut\source\repos\GameEngine\ImGui\sauce\imgui_impl_win32.cpp;C:\Users\takut\source\repos\GameEngine\GameEngine\x64\Release\imgui_impl_win32.obj
 C:\Users\takut\source\repos\GameEngine\ImGui\sauce\imgui_tables.cpp;C:\Users\takut\source\repos\GameEngine\GameEngine\x64\Release\imgui_tables.obj
 C:\Users\takut\source\repos\GameEngine\ImGui\sauce\imgui_widgets.cpp;C:\Users\takut\source\repos\GameEngine\GameEngine\x64\Release\imgui_widgets.obj
+C:\Users\takut\source\repos\GameEngine\IndexBuffer.cpp;C:\Users\takut\source\repos\GameEngine\GameEngine\x64\Release\IndexBuffer.obj
 C:\Users\takut\source\repos\GameEngine\main.cpp;C:\Users\takut\source\repos\GameEngine\GameEngine\x64\Release\main.obj
 C:\Users\takut\source\repos\GameEngine\PipelineState.cpp;C:\Users\takut\source\repos\GameEngine\GameEngine\x64\Release\PipelineState.obj
 C:\Users\takut\source\repos\GameEngine\RootSignature.cpp;C:\Users\takut\source\repos\GameEngine\GameEngine\x64\Release\RootSignature.obj
