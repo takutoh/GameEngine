@@ -1,5 +1,6 @@
 #pragma once
 #define NOMINMAX
+
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <string>
@@ -7,7 +8,6 @@
 
 struct Mesh;
 struct Vertex;
-
 struct aiMesh;
 struct aiMaterial;
 

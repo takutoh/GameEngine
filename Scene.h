@@ -3,8 +3,7 @@
 class Scene
 {
 public:
-	bool Init(); // ‰Šú‰»
-
+	bool Init();   // ‰Šú‰»
 	void Update(); // XVˆ—
 	void Draw();   // •`‰æˆ—
 };

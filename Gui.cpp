@@ -1,0 +1,89 @@
+#include "Gui.h"
+#include "Engine.h"
+#include <tchar.h>
+
+static int const NUM_FRAMES_IN_FLIGHT = 3;
+
+ID3D12Device* g_pd3dDevice = nullptr;
+ID3D12DescriptorHeap* g_pd3dSrvDescHeap = nullptr;
+Gui* g_Gui = nullptr;
+
+bool Gui::Init(HWND hwnd)
+{
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
+    ImGui::StyleColorsDark();
+
+    // Direct3Dデバイスの生成
+    IDXGIFactory1* factory = nullptr;
+    HRESULT hr = CreateDXGIFactory1(IID_PPV_ARGS(&factory));
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    IDXGIAdapter1* adapter = nullptr;
+    hr = factory->EnumAdapters1(0, &adapter);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    hr = D3D12CreateDevice(
+        adapter,
+        D3D_FEATURE_LEVEL_11_0,
+        IID_PPV_ARGS(&g_pd3dDevice)
+    );
+
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // デスクリプタヒープの生成
+    D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
+    descHeapDesc.NumDescriptors = 1;
+    descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+
+    hr = g_pd3dDevice->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&g_pd3dSrvDescHeap));
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // ImGuiの初期化
+    ImGui_ImplWin32_Init(hwnd);
+    ImGui_ImplDX12_Init(g_pd3dDevice, NUM_FRAMES_IN_FLIGHT,
+        DXGI_FORMAT_R8G8B8A8_UNORM, g_pd3dSrvDescHeap,
+        g_pd3dSrvDescHeap->GetCPUDescriptorHandleForHeapStart(),
+        g_pd3dSrvDescHeap->GetGPUDescriptorHandleForHeapStart());
+
+    return true;
+}
+
+void Gui::Update()
+{
+	ImGui_ImplDX12_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+}
+
+void Gui::Draw()
+{
+    ImGui::Begin("Hello, world!");
+    ImGui::End();
+
+    ID3D12GraphicsCommandList* commandList = g_Engine->CommandList();
+
+    ImGui::Render();
+
+    ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
+}
+
+void Gui::End()
+{
+    ImGui_ImplDX12_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
+}

@@ -1,6 +1,7 @@
 #include "App.h"
 #include "Engine.h"
 #include "Scene.h"
+#include "Gui.h"
 
 void Application::Run(HINSTANCE hInstance)
 {
@@ -71,7 +72,16 @@ void Application::Run(HINSTANCE hInstance)
 		return;
 	}
 
+	// ImGui‚Ì‰Šú‰»
+	g_Gui = new Gui();
+	if (!g_Gui->Init(hwnd))
+	{
+		return;
+	}
+	
 	MainLoop();
+
+	g_Gui->End();
 }
 
 void MainLoop()
@@ -86,10 +96,11 @@ void MainLoop()
 		}
 		else
 		{
-			// •`‰æˆ—
 			g_Scene->Update();
+			g_Gui->Update();
 			g_Engine->BeginRender();
 			g_Scene->Draw();
+			g_Gui->Draw();
 			g_Engine->EndRender();
 		}
 	}
@@ -97,6 +108,11 @@ void MainLoop()
 
 LRESULT CALLBACK Application::WindowProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, message, wparam, lparam))
+	{
+		return true;
+	}
+
 	switch (message)
 	{
 	case WM_DESTROY:
