@@ -91,18 +91,11 @@ bool Scene::Init()
 	}
 
 	// 変換行列の生成
-	auto eyePos = XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f);                                  // 視点の位置
-	auto targetPos = XMVectorZero();                                                    // 視点を向ける座標
-	auto upward = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);                                  // 上方向を表すベクトル
-	constexpr auto fov = XMConvertToRadians(37.5);                                      // 視野角
+	constexpr auto fov = XMConvertToRadians(60);                                        // 視野角
 	auto aspect = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT); // アスペクト比
 
 	for (size_t i = 0; i < Engine::FRAME_BUFFER_COUNT; i++)
 	{
-		auto eyePos = XMVectorSet(0.0f, 120.0, 75.0, 0.0f);
-		auto targetPos = XMVectorSet(0.0f, 120.0, 0.0, 0.0f);
-		auto upward = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-		constexpr auto fov = XMConvertToRadians(60);
 		constantBuffer[i] = new ConstantBuffer(sizeof(Transform));
 		if (!constantBuffer[i]->IsValid())
 		{
@@ -112,6 +105,16 @@ bool Scene::Init()
 		// 変換行列の登録
 		auto ptr = constantBuffer[i]->GetPtr<Transform>();
 		ptr->World = XMMatrixIdentity();
+
+		// カメラの位置と視点を設定
+		auto eyePos = XMLoadFloat3(&cameraPosition);
+		XMVECTOR forward = XMVector3Rotate(XMVectorSet(0, 0, 1, 0), XMQuaternionRotationRollPitchYaw(
+			XMConvertToRadians(cameraRotation.x),
+			XMConvertToRadians(cameraRotation.y),
+			XMConvertToRadians(cameraRotation.z)));
+		auto targetPos = eyePos + forward;
+		auto upward = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
 		ptr->View = XMMatrixLookAtRH(eyePos, targetPos, upward);
 		ptr->Proj = XMMatrixPerspectiveFovRH(fov, aspect, 0.3f, 1000.0f);
 	}
@@ -157,17 +160,19 @@ bool Scene::Init()
 
 void Scene::Update()
 {
-	// モデルを回転
-	static float rotationAngle = 0.0f;
-	rotationAngle += 0.01f;
-
-	for (size_t i = 0; i < Engine::FRAME_BUFFER_COUNT; i++)
-	{
+	for (size_t i = 0; i < Engine::FRAME_BUFFER_COUNT; i++) {
 		auto ptr = constantBuffer[i]->GetPtr<Transform>();
 
-		auto rotationMatrix = XMMatrixRotationY(rotationAngle);
+		auto eyePos = XMLoadFloat3(&cameraPosition);
+		// カメラの位置を読み込み
+		XMVECTOR forward = XMVector3Rotate(XMVectorSet(0, 0, 1, 0), XMQuaternionRotationRollPitchYaw(
+			XMConvertToRadians(cameraRotation.x),
+			XMConvertToRadians(cameraRotation.y),
+			XMConvertToRadians(cameraRotation.z)));
+		auto targetPos = eyePos + forward;
+		auto upward = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-		ptr->World = rotationMatrix;
+		ptr->View = XMMatrixLookAtRH(eyePos, targetPos, upward);
 	}
 }
 

@@ -1,5 +1,6 @@
 #include "Gui.h"
 #include "Engine.h"
+#include "Scene.h"
 #include <tchar.h>
 
 static int const NUM_FRAMES_IN_FLIGHT = 3;
@@ -7,6 +8,8 @@ static int const NUM_FRAMES_IN_FLIGHT = 3;
 ID3D12Device* g_pd3dDevice = nullptr;
 ID3D12DescriptorHeap* g_pd3dSrvDescHeap = nullptr;
 Gui* g_Gui = nullptr;
+
+extern Scene* g_Scene;
 
 bool Gui::Init(HWND hwnd)
 {
@@ -64,14 +67,26 @@ bool Gui::Init(HWND hwnd)
 
 void Gui::Update()
 {
-	ImGui_ImplDX12_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
+    ImGui_ImplDX12_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
 }
 
 void Gui::Draw()
 {
-    ImGui::Begin("Hello, world!");
+    // カメラの位置と視点を変更するウィジェット
+    ImGui::Begin("Camera");
+
+    ImGui::Text("Position");
+    ImGui::InputFloat("X##Position", &g_Scene->cameraPosition.x);
+    ImGui::InputFloat("Y##Position", &g_Scene->cameraPosition.y);
+    ImGui::InputFloat("Z##Position", &g_Scene->cameraPosition.z);
+
+    ImGui::Text("Rotation");
+    ImGui::InputFloat("X##Rotation", &g_Scene->cameraRotation.x);
+    ImGui::InputFloat("Y##Rotation", &g_Scene->cameraRotation.y);
+    ImGui::InputFloat("Z##Rotation", &g_Scene->cameraRotation.z);
+
     ImGui::End();
 
     ID3D12GraphicsCommandList* commandList = g_Engine->CommandList();
