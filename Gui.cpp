@@ -93,6 +93,15 @@ void Gui::Draw()
 
     ImGui::End();
 
+    // フレームレートを表示するウィジェット
+    ImGui::Begin("Information");
+
+    ImGuiIO& io = ImGui::GetIO();
+    float fps = io.Framerate;
+    ImGui::Text("FPS = %.1f", fps);
+
+    ImGui::End();
+
     ID3D12GraphicsCommandList* commandList = g_Engine->CommandList();
 
     ImGui::Render();
