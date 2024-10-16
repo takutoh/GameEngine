@@ -10,6 +10,7 @@ ID3D12DescriptorHeap* g_pd3dSrvDescHeap = nullptr;
 Gui* g_Gui = nullptr;
 
 extern Scene* g_Scene;
+extern Engine* g_Engine;
 
 bool Gui::Init(HWND hwnd)
 {
@@ -74,7 +75,7 @@ void Gui::Update()
 
 void Gui::Draw()
 {
-    // カメラの位置と視点を変更するウィジェット
+    // カメラの位置と視点、背景色を変更するウィジェット
     ImGui::Begin("Camera");
 
     ImGui::Text("Position");
@@ -86,6 +87,9 @@ void Gui::Draw()
     ImGui::InputFloat("X##Rotation", &g_Scene->cameraRotation.x);
     ImGui::InputFloat("Y##Rotation", &g_Scene->cameraRotation.y);
     ImGui::InputFloat("Z##Rotation", &g_Scene->cameraRotation.z);
+
+    ImGui::Text("Background");
+    ImGui::ColorEdit4("", g_Engine->m_ClearColor);
 
     ImGui::End();
 

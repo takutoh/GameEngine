@@ -293,7 +293,7 @@ void Engine::BeginRender()
 	m_pCommandList->OMSetRenderTargets(1, &currentRtvHandle, FALSE, &currentDsvHandle);
 
 	// レンダーターゲットのクリア
-	const float clearColor[] = { 0.25f, 0.25f, 0.25f, 1.0f };
+	const float clearColor[] = { m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3] };
 	m_pCommandList->ClearRenderTargetView(currentRtvHandle, clearColor, 0, nullptr);
 
 	// 深度ステンシルビューのクリア

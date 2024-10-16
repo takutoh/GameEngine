@@ -24,6 +24,8 @@ public:
 	ID3D12GraphicsCommandList* CommandList();
 	UINT CurrentBackBufferIndex();
 
+	float m_ClearColor[4] = { 0.25f, 0.25f, 0.25f, 1.0f };
+
 // DirectX12の初期化に使う関数
 private:
 	bool CreateDevice();       // デバイスの生成
