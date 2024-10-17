@@ -93,6 +93,16 @@ void Gui::Draw()
 
     ImGui::End();
 
+    // 3Dモデルのウィジェット
+    ImGui::Begin("Alicia");
+
+    ImGui::Text("Rotate");
+    ImGui::InputFloat("X", &g_Scene->speedX);
+    ImGui::InputFloat("Y", &g_Scene->speedY);
+    ImGui::InputFloat("Z", &g_Scene->speedZ);
+
+    ImGui::End();
+
     // フレームレートを表示するウィジェット
     ImGui::Begin("Information");
 

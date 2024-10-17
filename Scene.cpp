@@ -160,8 +160,15 @@ bool Scene::Init()
 
 void Scene::Update()
 {
+	rotationAngleX += XMConvertToRadians(speedX);
+	rotationAngleY += XMConvertToRadians(speedY);
+	rotationAngleZ += XMConvertToRadians(speedZ);
+
 	for (size_t i = 0; i < Engine::FRAME_BUFFER_COUNT; i++) {
 		auto ptr = constantBuffer[i]->GetPtr<Transform>();
+
+		// 3DÉÇÉfÉãÇâÒì]
+		ptr->World = XMMatrixRotationX(rotationAngleX) * XMMatrixRotationY(rotationAngleY) * XMMatrixRotationZ(rotationAngleZ);
 
 		auto eyePos = XMLoadFloat3(&cameraPosition);
 		// ÉJÉÅÉâÇÃà íuÇì«Ç›çûÇ›
