@@ -101,6 +101,12 @@ void MainLoop()
 			g_Engine->BeginRender();
 			g_Scene->Draw();
 			g_Gui->Draw();
+			if (g_Gui->isPlaying) {
+				g_Scene->Play();
+			}
+			else if (!g_Gui->isPlaying) {
+				g_Scene->Stop();
+			}
 			g_Engine->EndRender();
 		}
 	}

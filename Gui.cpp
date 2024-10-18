@@ -75,6 +75,15 @@ void Gui::Update()
 
 void Gui::Draw()
 {
+    // 再生するウィジェット
+    ImGui::Begin("Play");
+
+    if (ImGui::Button(isPlaying ? "Stop" : "Play")) {
+        isPlaying = !isPlaying;
+    }
+
+    ImGui::End();
+
     // カメラの位置と視点、背景色を変更するウィジェット
     ImGui::Begin("Camera");
 

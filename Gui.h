@@ -16,6 +16,8 @@ public:
 	void Draw();          // •`‰æˆ—
 	void End();           // I—¹ˆ—
 
+	bool isPlaying = false;
+
 private:
 	HWND hwnd;
 };

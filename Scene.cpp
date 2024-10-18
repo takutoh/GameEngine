@@ -160,15 +160,8 @@ bool Scene::Init()
 
 void Scene::Update()
 {
-	rotationAngleX += XMConvertToRadians(speedX);
-	rotationAngleY += XMConvertToRadians(speedY);
-	rotationAngleZ += XMConvertToRadians(speedZ);
-
 	for (size_t i = 0; i < Engine::FRAME_BUFFER_COUNT; i++) {
 		auto ptr = constantBuffer[i]->GetPtr<Transform>();
-
-		// 3Dモデルを回転
-		ptr->World = XMMatrixRotationX(rotationAngleX) * XMMatrixRotationY(rotationAngleY) * XMMatrixRotationZ(rotationAngleZ);
 
 		auto eyePos = XMLoadFloat3(&cameraPosition);
 		// カメラの位置を読み込み
@@ -207,5 +200,35 @@ void Scene::Draw()
 		commandList->SetGraphicsRootDescriptorTable(1, materialHandles[i]->HandleGPU);
 
 		commandList->DrawIndexedInstanced(meshes[i].Indices.size(), 1, 0, 0, 0); // インデックスの数分描画
+	}
+}
+
+void Scene::Play()
+{
+	rotationAngleX += XMConvertToRadians(speedX);
+	rotationAngleY += XMConvertToRadians(speedY);
+	rotationAngleZ += XMConvertToRadians(speedZ);
+
+	for (size_t i = 0; i < Engine::FRAME_BUFFER_COUNT; i++) {
+		auto ptr = constantBuffer[i]->GetPtr<Transform>();
+
+		// 3Dモデルを回転
+		ptr->World = XMMatrixRotationX(rotationAngleX) * XMMatrixRotationY(rotationAngleY) * XMMatrixRotationZ(rotationAngleZ);
+	}
+}
+
+void Scene::Stop()
+{
+	XMMATRIX translationMatrix = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+
+	rotationAngleX = 0.0;
+	rotationAngleY = 0.0;
+	rotationAngleZ = 0.0;
+
+	for (size_t i = 0; i < Engine::FRAME_BUFFER_COUNT; i++) {
+		auto ptr = constantBuffer[i]->GetPtr<Transform>();
+
+		// 3Dモデルを元の位置に
+		ptr->World = translationMatrix;
 	}
 }
