@@ -22,6 +22,10 @@ public:
 	float speedX = 0.0f;
 	float speedY = 0.0f;
 	float speedZ = 0.0f;
+
+	float positionX = 0.0f;
+	float positionY = 0.0f;
+	float positionZ = 0.0f;
 };
 
 extern Scene* g_Scene;

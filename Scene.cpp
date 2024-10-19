@@ -205,6 +205,8 @@ void Scene::Draw()
 
 void Scene::Play()
 {
+	XMMATRIX translationMatrix = XMMatrixTranslation(positionX, positionY, positionZ);
+
 	rotationAngleX += XMConvertToRadians(speedX);
 	rotationAngleY += XMConvertToRadians(speedY);
 	rotationAngleZ += XMConvertToRadians(speedZ);
@@ -212,14 +214,18 @@ void Scene::Play()
 	for (size_t i = 0; i < Engine::FRAME_BUFFER_COUNT; i++) {
 		auto ptr = constantBuffer[i]->GetPtr<Transform>();
 
-		// 3Dƒ‚ƒfƒ‹‚ð‰ñ“]
-		ptr->World = XMMatrixRotationX(rotationAngleX) * XMMatrixRotationY(rotationAngleY) * XMMatrixRotationZ(rotationAngleZ);
+		XMMATRIX rotationMatrix = XMMatrixRotationX(rotationAngleX) *
+			XMMatrixRotationY(rotationAngleY) *
+			XMMatrixRotationZ(rotationAngleZ);
+
+		// 3Dƒ‚ƒfƒ‹‚ð‰ñ“]AˆÚ“®
+		ptr->World = rotationMatrix * translationMatrix;
 	}
 }
 
 void Scene::Stop()
 {
-	XMMATRIX translationMatrix = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	XMMATRIX translationMatrix = XMMatrixTranslation(positionX, positionY, positionZ);
 
 	rotationAngleX = 0.0;
 	rotationAngleY = 0.0;

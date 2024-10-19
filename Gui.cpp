@@ -105,10 +105,15 @@ void Gui::Draw()
     // 3Dモデルのウィジェット
     ImGui::Begin("Alicia");
 
+    ImGui::Text("Position");
+    ImGui::InputFloat("X##Position", &g_Scene->positionX);
+    ImGui::InputFloat("Y##Position", &g_Scene->positionY);
+    ImGui::InputFloat("Z##Position", &g_Scene->positionZ);
+
     ImGui::Text("Rotate");
-    ImGui::InputFloat("X", &g_Scene->speedX);
-    ImGui::InputFloat("Y", &g_Scene->speedY);
-    ImGui::InputFloat("Z", &g_Scene->speedZ);
+    ImGui::InputFloat("X##Rotate", &g_Scene->speedX);
+    ImGui::InputFloat("Y##Rotate", &g_Scene->speedY);
+    ImGui::InputFloat("Z##Rotate", &g_Scene->speedZ);
 
     ImGui::End();
 
