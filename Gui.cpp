@@ -110,6 +110,11 @@ void Gui::Draw()
     ImGui::InputFloat("Y##Position", &g_Scene->positionY);
     ImGui::InputFloat("Z##Position", &g_Scene->positionZ);
 
+    ImGui::Text("Rotation");
+    ImGui::InputFloat("X##Rotation", &g_Scene->rotationX);
+    ImGui::InputFloat("Y##Rotation", &g_Scene->rotationY);
+    ImGui::InputFloat("Z##Rotation", &g_Scene->rotationZ);
+
     ImGui::Text("Rotate");
     ImGui::InputFloat("X##Rotate", &g_Scene->speedX);
     ImGui::InputFloat("Y##Rotate", &g_Scene->speedY);

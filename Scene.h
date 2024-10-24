@@ -26,6 +26,10 @@ public:
 	float positionX = 0.0f;
 	float positionY = 0.0f;
 	float positionZ = 0.0f;
+
+	float rotationX = 0.0f;
+	float rotationY = 0.0f;
+	float rotationZ = 0.0f;
 };
 
 extern Scene* g_Scene;

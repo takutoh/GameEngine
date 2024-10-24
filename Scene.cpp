@@ -211,6 +211,10 @@ void Scene::Play()
 	rotationAngleY += XMConvertToRadians(speedY);
 	rotationAngleZ += XMConvertToRadians(speedZ);
 
+	XMMATRIX rotationMatrixX = XMMatrixRotationX(rotationX);
+	XMMATRIX rotationMatrixY = XMMatrixRotationY(rotationY);
+	XMMATRIX rotationMatrixZ = XMMatrixRotationZ(rotationZ);
+
 	for (size_t i = 0; i < Engine::FRAME_BUFFER_COUNT; i++) {
 		auto ptr = constantBuffer[i]->GetPtr<Transform>();
 
@@ -218,8 +222,10 @@ void Scene::Play()
 			XMMatrixRotationY(rotationAngleY) *
 			XMMatrixRotationZ(rotationAngleZ);
 
+		XMMATRIX worldMatrix = rotationMatrixZ * rotationMatrixY * rotationMatrixX * translationMatrix * rotationMatrix;
+
 		// 3Dモデルを回転、移動
-		ptr->World = rotationMatrix * translationMatrix;
+		ptr->World = worldMatrix;
 	}
 }
 
@@ -231,10 +237,16 @@ void Scene::Stop()
 	rotationAngleY = 0.0;
 	rotationAngleZ = 0.0;
 
+	XMMATRIX rotationMatrixX = XMMatrixRotationX(rotationX);
+	XMMATRIX rotationMatrixY = XMMatrixRotationY(rotationY);
+	XMMATRIX rotationMatrixZ = XMMatrixRotationZ(rotationZ);
+
 	for (size_t i = 0; i < Engine::FRAME_BUFFER_COUNT; i++) {
 		auto ptr = constantBuffer[i]->GetPtr<Transform>();
 
+		XMMATRIX worldMatrix = rotationMatrixZ * rotationMatrixY * rotationMatrixX * translationMatrix;
+
 		// 3Dモデルを元の位置に
-		ptr->World = translationMatrix;
+		ptr->World = worldMatrix;
 	}
 }
